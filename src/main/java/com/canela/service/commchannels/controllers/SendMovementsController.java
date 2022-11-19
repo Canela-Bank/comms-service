@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpResponse;
@@ -23,8 +24,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
-
 //communicationChannelsService
 //uri: http://10.0.0.0:9009/
 
@@ -38,7 +37,7 @@ public class SendMovementsController {
 	 @PostMapping(value = "/sendMovements")
 	    public String servicePaymentSavings (@RequestBody Request request){
 		 
-		 String url = "http://localhost:3001/graphql";
+		 String url = "http://localhost:3002/graphql";
 		 String operation = "getMovementsByOriginAccount";
 		 String query = "query{getMovementsByOriginAccount(account_id:\""+request.accountId+"\"){\n"
 		 		+ "  origin_account\n"
@@ -70,9 +69,33 @@ public class SendMovementsController {
 		        }
 
 		        	JsonNode MovementsAccount = Movements.get(operation);
-		        	StringBuilder sb = new StringBuilder(MovementsAccount.toString());      
+		        	StringBuilder sb = new StringBuilder();
+					sb.append("RESUMEN DE TU CUENTA\n\n");
+					if(MovementsAccount.isArray()) {
+						int numMovimiento = 1;
+						for (JsonNode n: MovementsAccount) {
+							sb.append("Movimiento ").append(numMovimiento).append(":\n");
+							sb.append("Cuenta de origen: ");
+							String origin_account = n.get("origin_account").toString();
+							sb.append(origin_account).append("\n");
+
+							sb.append("Cuenta destino: ");
+							String destination_account = n.get("destination_account").toString();
+							sb.append(destination_account).append("\n");
+
+							sb.append("Cantidad transferida: ");
+							String amount = n.get("amount").toString();
+							sb.append(amount).append("$\n");
+
+							sb.append("Fecha: ");
+							String date = n.get("movement_date").toString();
+							sb.append(date).append("\n");
+							sb.append("\n");
+							numMovimiento++;
+						}
+					}
 		        	
-		        	 service.sendSimpleEmail(request.userEmail, " Movimientos: " + sb , "Extracto Canela Bank");
+					service.sendSimpleEmail(request.userEmail, sb.toString() , "Extracto Canela Bank");
 		        	return  MovementsAccount.toString();
 
 		} catch (Exception e) {
