@@ -65,7 +65,7 @@ public class SendMovementsController {
 		        
 		        JsonNode Movements = node.get("data");
 		        if(Movements == null) {
-		        	return Movements.toString();
+		        	return node.toString();
 		        }
 
 		        	JsonNode MovementsAccount = Movements.get(operation);
