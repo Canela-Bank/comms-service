@@ -5,9 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.stream.Collectors;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.canela.service.commchannels.service.EmailSenderService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,8 +101,7 @@ public class SendMovementsController {
 		 
 		 
 	 }
-	
-	
+		
 	 static class Request {
 	        private String userEmail;
 	        private String accountId;
@@ -122,7 +118,5 @@ public class SendMovementsController {
 			public void setAccountId(String accountId) {
 				this.accountId = accountId;
 			}
-
 	    }
-
 }
